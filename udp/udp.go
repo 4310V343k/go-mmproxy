@@ -164,10 +164,14 @@ func Listen(ctx context.Context, listenConfig *net.ListenConfig, opts *utils.Opt
 			continue
 		}
 
-		saddr, daddr, restBytes, err := proxyprotocol.ReadRemoteAddr(buffer[:n], utils.UDP)
-		if err != nil {
-			logger.Debug("failed to parse PROXY header", "error", err, slog.String("remoteAddr", remoteAddr.String()))
-			continue
+		if !opts.Serialize {
+			saddr, daddr, bytesToWrite, err := proxyprotocol.ReadRemoteAddr(buffer[:n], utils.UDP)
+			if err != nil {
+				logger.Debug("failed to parse PROXY header", "error", err, slog.String("remoteAddr", remoteAddr.String()))
+				continue
+			}
+		} else {
+			saddr, daddr, bytesToWrite, err := 
 		}
 
 		for {
@@ -188,7 +192,7 @@ func Listen(ctx context.Context, listenConfig *net.ListenConfig, opts *utils.Opt
 			continue
 		}
 
-		_, err = conn.upstream.Write(restBytes)
+		_, err = conn.upstream.Write(bytesToWrite)
 		if err != nil {
 			conn.logger.Error("failed to write to upstream socket", "error", err)
 		}

@@ -27,6 +27,7 @@ type Options struct {
 	TargetAddr4        netip.AddrPort
 	TargetAddr6        netip.AddrPort
 	DynamicDestination bool
+	Serialize          bool
 	Mark               int
 	Verbose            int
 	AllowedSubnets     []netip.Prefix

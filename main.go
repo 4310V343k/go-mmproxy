@@ -37,6 +37,7 @@ func init() {
 	flag.StringVar(&targetAddr4Str, "4", "127.0.0.1:443", "Address to which IPv4 traffic will be forwarded to")
 	flag.StringVar(&targetAddr6Str, "6", "[::1]:443", "Address to which IPv6 traffic will be forwarded to")
 	flag.BoolVar(&opts.DynamicDestination, "dynamic-destination", false, "Traffic will be forwarded to the destination specified in the PROXY protocol header")
+	flag.BoolVar(&opts.Serialize, "serialize", 0, "Serialize PROXY header instead of deserializing it. UDP ONLY!")
 	flag.IntVar(&opts.Mark, "mark", 0, "The mark that will be set on outbound packets")
 	flag.IntVar(&opts.Verbose, "v", 0, `0 - no logging of individual connections
 1 - log errors occurring in individual connections
@@ -115,6 +116,8 @@ func main() {
 		logger.Error("--protocol has to be one of udp, tcp", slog.String("protocol", protocolStr))
 		os.Exit(1)
 	}
+
+
 
 	if opts.Mark < 0 {
 		logger.Error("--mark has to be >= 0", slog.Int("mark", opts.Mark))
